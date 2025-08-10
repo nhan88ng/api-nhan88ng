@@ -23,13 +23,14 @@ EXPANDED TEST COVERAGE:
 
 import requests
 import json
+import os
 import sys
 import time
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 
 # Configuration
-BASE_URL = "http://localhost:8000"
+BASE_URL = os.getenv("TEST_BASE_URL", "http://localhost:8000")
 API_BASE = f"{BASE_URL}/api/v1"
 
 class Colors:

@@ -7,7 +7,7 @@ Hệ thống API Nhan88ng sử dụng **2 admin users** riêng biệt cho từng
 ### 1. TinaShop Admin
 ```
 Email: admin@tina.shop
-Password: admin123
+Password: [Set during deployment]
 Role: admin
 Shop: tinashop
 Permissions: full access to tinashop products/categories/orders
@@ -16,7 +16,7 @@ Permissions: full access to tinashop products/categories/orders
 ### 2. Micocah Admin  
 ```
 Email: admin@micocah.vn
-Password: creator123
+Password: [Set during deployment]
 Role: admin
 Shop: micocah
 Permissions: full access to micocah products/categories/orders
@@ -29,7 +29,7 @@ Permissions: full access to micocah products/categories/orders
 POST /api/v1/auth/login
 {
     "email": "admin@tina.shop",
-    "password": "admin123"
+    "password": "your_admin_password"
 }
 ```
 
@@ -38,7 +38,7 @@ POST /api/v1/auth/login
 POST /api/v1/auth/login
 {
     "email": "admin@micocah.vn", 
-    "password": "creator123"
+    "password": "your_admin_password"
 }
 ```
 
@@ -57,10 +57,27 @@ Các file test sử dụng admin users:
 
 ## Security Notes
 
-- Passwords hiện tại là test passwords
-- Production environment cần đổi passwords mạnh hơn
-- JWT tokens có thời gian expire
-- Role-based access control (RBAC) đã được implement
+- **Production passwords**: Must be set during deployment with strong passwords
+- **Development passwords**: Contact team for current development credentials  
+- JWT tokens have expiration time
+- Role-based access control (RBAC) implemented
+- All passwords encrypted with bcrypt
+
+## Deployment Setup
+
+### Creating Admin Users
+```bash
+# Use the registration endpoint with admin role
+curl -X POST "http://your-domain/api/v1/auth/register" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@tina.shop",
+    "password": "your_secure_password",
+    "full_name": "TinaShop Admin",
+    "shop": "tinashop",
+    "role": "admin"
+  }'
+```
 
 ## Current Status
 
