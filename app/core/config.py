@@ -33,13 +33,13 @@ class Settings(BaseSettings):
             self._cors_origins_list = origins
         return self._cors_origins_list
     
-    # MongoDB Atlas Configuration
-    MONGODB_TINASHOP_URL: str = "mongodb+srv://nhan88ng:nhan8888@cluster0.dv8ej.mongodb.net/nhan88ng_tinashop?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE"
-    MONGODB_MICOCAH_URL: str = "mongodb+srv://nhan88ng:nhan8888@cluster0.dv8ej.mongodb.net/nhan88ng_micocah?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE"
-    MONGODB_SHARED_URL: str = "mongodb+srv://nhan88ng:nhan8888@cluster0.dv8ej.mongodb.net/nhan88ng_shared?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE"
+    # MongoDB Atlas Configuration - Read from .env file
+    MONGODB_TINASHOP_URL: str
+    MONGODB_MICOCAH_URL: str  
+    MONGODB_SHARED_URL: str
     
-    # JWT Configuration
-    SECRET_KEY: str = "your-super-secret-key-change-this-in-production"
+    # JWT Configuration - Read from .env file
+    SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
