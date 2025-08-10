@@ -147,9 +147,9 @@ curl http://localhost:8000/health
 curl -X POST "http://localhost:8000/api/v1/auth/register" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "test@tinashop.com",
-    "password": "password123",
-    "full_name": "Test User",
+    "email": "yourname@example.com",
+    "password": "your_secure_password",
+    "full_name": "Your Name",
     "shop": "tinashop"
   }'
 
@@ -157,8 +157,8 @@ curl -X POST "http://localhost:8000/api/v1/auth/register" \
 curl -X POST "http://localhost:8000/api/v1/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "admin@tinashop.com",
-    "password": "admin123"
+    "email": "yourname@example.com",
+    "password": "your_secure_password"
   }'
 ```
 
@@ -190,13 +190,27 @@ CORS_ORIGINS=["http://localhost:3000", "https://yourdomain.com"]
 
 ## 👥 User Management
 
-### Default Admin User
-```
-Email: admin@tinashop.com
-Password: admin123
-Role: admin
-Permissions: All system permissions
-Shop: tinashop
+### Admin User Setup
+After setting up the project, you'll need to create an admin user through the API or directly in the database. The system supports multiple user roles with shop-specific permissions.
+
+**User Roles:**
+- `customer`: Basic user with read-only access
+- `admin`: Shop administrator with full shop management
+- `super_admin`: System administrator with cross-shop access
+
+**Creating Admin User:**
+```bash
+# Use the registration endpoint with admin role
+# Admin users must be created with proper permissions
+curl -X POST "http://localhost:8000/api/v1/auth/register" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "your_admin@yourshop.com",
+    "password": "your_secure_admin_password",
+    "full_name": "Admin Name",
+    "shop": "tinashop",
+    "role": "admin"
+  }'
 ```
 
 ### User Roles and Permissions
