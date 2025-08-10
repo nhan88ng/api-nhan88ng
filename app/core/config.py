@@ -55,10 +55,10 @@ class Settings(BaseSettings):
     FROM_EMAIL: str
     FROM_NAME: str
     
-    # Frontend URLs
-    FRONTEND_URL: str = "http://localhost:3000"
-    TINASHOP_URL: str = "http://localhost:3001"
-    MICOCAH_URL: str = "http://localhost:3002"
+    # Frontend URLs - Read from .env
+    FRONTEND_URL: str
+    TINASHOP_URL: str
+    MICOCAH_URL: str
     
     # Security Settings
     PASSWORD_MIN_LENGTH: int = 8
