@@ -28,6 +28,10 @@ import sys
 import time
 from datetime import datetime
 from typing import Dict, List, Any, Optional
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Configuration
 BASE_URL = os.getenv("TEST_BASE_URL", "http://localhost:8000")
@@ -183,7 +187,7 @@ class UltimateSystemTest:
                 "email": self.test_user_email,
                 "username": f"ultimate_test_{int(time.time())}",
                 "full_name": "Ultimate Test User",
-                "password": "SecureTest123!",
+                "password": os.getenv("TEST_USER_PASSWORD", "SecureTest123!"),
                 "shop": "tinashop"
             }
             
@@ -214,7 +218,7 @@ class UltimateSystemTest:
             # Test regular user login
             login_data = {
                 "email": self.test_user_email,
-                "password": "SecureTest123!"
+                "password": os.getenv("TEST_USER_PASSWORD", "SecureTest123!")
             }
             
             response = requests.post(f"{API_BASE}/auth/login", json=login_data, timeout=10)
@@ -242,10 +246,10 @@ class UltimateSystemTest:
         """Test 5: Admin Authentication"""
         start_time = time.time()
         try:
-            # Test TinaShop Admin
+            # Test TinaShop Admin - Read from environment
             admin_data = {
-                "email": "admin@tina.shop",
-                "password": "admin123"
+                "email": os.getenv("ADMIN_TINASHOP_EMAIL", "admin@tina.shop"),
+                "password": os.getenv("ADMIN_TINASHOP_PASSWORD", "admin123")
             }
             
             response = requests.post(f"{API_BASE}/auth/login", json=admin_data, timeout=10)
