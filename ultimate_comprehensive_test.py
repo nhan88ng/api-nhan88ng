@@ -34,7 +34,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration
-BASE_URL = os.getenv("TEST_BASE_URL", "http://localhost:8000")
+BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
 API_BASE = f"{BASE_URL}/api/v1"
 
 class Colors:
