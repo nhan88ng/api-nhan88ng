@@ -68,6 +68,20 @@ class Settings(BaseSettings):
     # Rate Limiting
     RATE_LIMIT_PER_MINUTE: int = 60
     
+    # Server Configuration - Read from .env
+    HOST: str = "0.0.0.0"
+    PORT: int = 8000
+    DEBUG: bool = True
+    LOG_LEVEL: str = "info"
+    
+    # Test Credentials - ALL READ FROM .env FOR SECURITY
+    TEST_USER_PASSWORD: str
+    ADMIN_TINASHOP_EMAIL: str
+    ADMIN_TINASHOP_PASSWORD: str
+    ADMIN_MICOCAH_EMAIL: str
+    ADMIN_MICOCAH_PASSWORD: str
+    BASE_URL: str
+    
     class Config:
         env_file = ".env"
         case_sensitive = True

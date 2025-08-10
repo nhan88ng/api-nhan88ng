@@ -80,9 +80,10 @@ async def get_product(
         
         return ProductResponse(**product)
     except ValueError as e:
+        # Invalid ObjectId format should also return 404 for better UX
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"Invalid product ID format: {str(e)}"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Product not found"
         )
     except Exception as e:
         raise HTTPException(
