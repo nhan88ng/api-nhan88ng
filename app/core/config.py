@@ -9,6 +9,7 @@ Application configuration management
 """
 from pydantic_settings import BaseSettings
 from typing import List, Optional
+from pydantic import Field
 import os
 
 class Settings(BaseSettings):
@@ -17,8 +18,8 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Nhan88ng API"
     VERSION: str = "1.0.0"
     
-    # CORS Settings - Handle as string first, then convert to list
-    _CORS_ORIGINS: str = "http://localhost:3000,http://localhost:3001,http://localhost:3002,http://127.0.0.1:3000,http://127.0.0.1:3001,http://127.0.0.1:3002"
+    # CORS Settings - Read from .env
+    CORS_ORIGINS_STR: str = Field(alias="CORS_ORIGINS")
     
     @property
     def CORS_ORIGINS(self) -> List[str]:
@@ -26,7 +27,7 @@ class Settings(BaseSettings):
         if hasattr(self, '_cors_origins_list'):
             return self._cors_origins_list
         
-        origins = self._CORS_ORIGINS
+        origins = self.CORS_ORIGINS_STR
         if isinstance(origins, str):
             self._cors_origins_list = [origin.strip() for origin in origins.split(',') if origin.strip()]
         else:
@@ -46,13 +47,13 @@ class Settings(BaseSettings):
     PASSWORD_RESET_TOKEN_EXPIRE_HOURS: int = 1
     EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS: int = 24
     
-    # Email Configuration
+    # Email Configuration - Read from .env
     SMTP_SERVER: Optional[str] = None
     SMTP_PORT: int = 587
     SMTP_USERNAME: Optional[str] = None
     SMTP_PASSWORD: Optional[str] = None
-    FROM_EMAIL: str = "noreply@nhan88ng.com"
-    FROM_NAME: str = "Nhan88ng Platform"
+    FROM_EMAIL: str
+    FROM_NAME: str
     
     # Frontend URLs
     FRONTEND_URL: str = "http://localhost:3000"
