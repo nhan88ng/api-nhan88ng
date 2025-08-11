@@ -37,7 +37,7 @@ def create_user_response(user: dict) -> UserResponse:
         created_at=user["created_at"]
     )
 
-@router.post("/register", response_model=Token)
+@router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def register(user_data: UserRegister, background_tasks: BackgroundTasks):
     """Register a new user"""
     try:

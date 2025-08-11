@@ -1,0 +1,89 @@
+{
+  "example_shop": {
+    "name": "Example Shop",
+    "mongodb_url": "mongodb+srv://USERNAME:PASSWORD@cluster.mongodb.net/database_name?retryWrites=true&w=majority",
+    "admin_email": "admin@example-shop.com",
+    "admin_password": "change-this-password",
+    "frontend_url": "http://localhost:3001",
+    "domain": "example-shop.com",
+    "description": "Your shop description here",
+    "theme": {
+      "primary_color": "#007bff",
+      "secondary_color": "#6c757d",
+      "logo": "/static/images/example-shop/logo.png",
+      "favicon": "/static/images/example-shop/favicon.ico",
+      "banner": "/static/images/example-shop/banner.jpg"
+    },
+    "features": [
+      "products",
+      "orders",
+      "inventory",
+      "categories",
+      "customers",
+      "reviews",
+      "wishlist"
+    ],
+    "settings": {
+      "allow_guest_checkout": true,
+      "require_email_verification": false,
+      "enable_reviews": true,
+      "enable_wishlist": true,
+      "currency": "USD",
+      "language": "en",
+      "timezone": "UTC"
+    },
+    "contact": {
+      "email": "support@example-shop.com",
+      "phone": "+1 (555) 123-4567",
+      "address": "123 Main Street, City, Country"
+    },
+    "social": {
+      "facebook": "https://facebook.com/example-shop",
+      "instagram": "https://instagram.com/example-shop",
+      "twitter": "https://twitter.com/example-shop",
+      "youtube": "https://youtube.com/example-shop",
+      "linkedin": "https://linkedin.com/company/example-shop"
+    }
+  },
+  "another_shop": {
+    "name": "Another Shop",
+    "mongodb_url": "mongodb+srv://USERNAME:PASSWORD@cluster.mongodb.net/another_database?retryWrites=true&w=majority",
+    "admin_email": "admin@another-shop.com",
+    "admin_password": "change-this-password-too",
+    "frontend_url": "http://localhost:3002",
+    "domain": "another-shop.com",
+    "description": "Another shop example",
+    "theme": {
+      "primary_color": "#28a745",
+      "secondary_color": "#ffc107",
+      "logo": "/static/images/another-shop/logo.png",
+      "favicon": "/static/images/another-shop/favicon.ico",
+      "banner": "/static/images/another-shop/banner.jpg"
+    },
+    "features": [
+      "products",
+      "orders",
+      "categories",
+      "brands",
+      "specifications"
+    ],
+    "settings": {
+      "allow_guest_checkout": false,
+      "require_email_verification": true,
+      "enable_reviews": true,
+      "enable_wishlist": false,
+      "currency": "EUR",
+      "language": "fr",
+      "timezone": "Europe/Paris"
+    },
+    "contact": {
+      "email": "support@another-shop.com",
+      "phone": "+33 1 23 45 67 89",
+      "address": "456 Another Street, Paris, France"
+    },
+    "social": {
+      "facebook": "https://facebook.com/another-shop",
+      "youtube": "https://youtube.com/another-shop"
+    }
+  }
+}

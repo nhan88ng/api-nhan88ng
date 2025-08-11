@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Nhan88ng API"
     VERSION: str = "1.0.0"
     
+    # Shop Configuration
+    SHOPS_CONFIG_FILE: str = "shops.json"
+    
     # CORS Settings - Read from .env
     CORS_ORIGINS_STR: str = Field(alias="CORS_ORIGINS")
     
@@ -35,8 +38,6 @@ class Settings(BaseSettings):
         return self._cors_origins_list
     
     # MongoDB Atlas Configuration - Read from .env file
-    MONGODB_TINASHOP_URL: str
-    MONGODB_MICOCAH_URL: str  
     MONGODB_SHARED_URL: str
     
     # JWT Configuration - Read from .env file
@@ -57,8 +58,6 @@ class Settings(BaseSettings):
     
     # Frontend URLs - Read from .env
     FRONTEND_URL: str
-    TINASHOP_URL: str
-    MICOCAH_URL: str
     
     # Security Settings
     PASSWORD_MIN_LENGTH: int = 8
@@ -76,10 +75,6 @@ class Settings(BaseSettings):
     
     # Test Credentials - ALL READ FROM .env FOR SECURITY
     TEST_USER_PASSWORD: str
-    ADMIN_TINASHOP_EMAIL: str
-    ADMIN_TINASHOP_PASSWORD: str
-    ADMIN_MICOCAH_EMAIL: str
-    ADMIN_MICOCAH_PASSWORD: str
     BASE_URL: str
     
     class Config:

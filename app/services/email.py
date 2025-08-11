@@ -7,6 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from typing import Optional
 import logging
 from app.core.config import settings
+from app.core.shop_manager import get_shop_config
 
 logger = logging.getLogger(__name__)
 
@@ -64,9 +65,16 @@ class EmailService:
 # Initialize email service
 email_service = EmailService()
 
-def send_verification_email(email: str, full_name: str, verification_token: str) -> bool:
+def send_verification_email(email: str, full_name: str, verification_token: str, shop: str = None) -> bool:
     """Send email verification email"""
-    verification_url = f"{getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')}/verify-email?token={verification_token}"
+    # Get shop-specific frontend URL or fallback to default
+    if shop:
+        shop_config = get_shop_config(shop)
+        frontend_url = shop_config.frontend_url if shop_config else settings.FRONTEND_URL
+    else:
+        frontend_url = settings.FRONTEND_URL
+    
+    verification_url = f"{frontend_url}/verify-email?token={verification_token}"
     
     subject = "Verify Your Email - Nhan88ng Platform"
     
@@ -135,9 +143,16 @@ def send_verification_email(email: str, full_name: str, verification_token: str)
     
     return email_service.send_email(email, subject, html_content, text_content)
 
-def send_password_reset_email(email: str, full_name: str, reset_token: str) -> bool:
+def send_password_reset_email(email: str, full_name: str, reset_token: str, shop: str = None) -> bool:
     """Send password reset email"""
-    reset_url = f"{getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')}/reset-password?token={reset_token}"
+    # Get shop-specific frontend URL or fallback to default
+    if shop:
+        shop_config = get_shop_config(shop)
+        frontend_url = shop_config.frontend_url if shop_config else settings.FRONTEND_URL
+    else:
+        frontend_url = settings.FRONTEND_URL
+    
+    reset_url = f"{frontend_url}/reset-password?token={reset_token}"
     
     subject = "Password Reset Request - Nhan88ng Platform"
     
@@ -216,13 +231,14 @@ def send_welcome_email(email: str, full_name: str, shop: str) -> bool:
     """Send welcome email after successful verification"""
     subject = f"Welcome to {shop.title()} - Nhan88ng Platform"
     
-    shop_urls = {
-        "tinashop": getattr(settings, 'TINASHOP_URL', 'http://localhost:3001'),
-        "micocah": getattr(settings, 'MICOCAH_URL', 'http://localhost:3002'),
-        "shared": getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
-    }
-    
-    shop_url = shop_urls.get(shop, shop_urls["shared"])
+    # Get shop-specific frontend URL or fallback to default
+    shop_config = get_shop_config(shop)
+    if shop_config:
+        shop_url = shop_config.frontend_url
+        shop_name = shop_config.name
+    else:
+        shop_url = settings.FRONTEND_URL
+        shop_name = shop.title()
     
     html_content = f"""
     <!DOCTYPE html>

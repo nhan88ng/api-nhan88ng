@@ -13,8 +13,19 @@ from app.schemas.product import (
 from app.crud.product import product_crud
 from app.core.deps import get_current_user, get_current_user_optional, require_role
 from app.core.permissions import UserRole
+from app.core.shop_manager import is_valid_shop_id, get_all_shop_configs
 
 router = APIRouter()
+
+def validate_shop_parameter(shop: str):
+    """Validate shop parameter using dynamic shop configuration"""
+    if not is_valid_shop_id(shop):
+        valid_shops = list(get_all_shop_configs().keys())
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid shop. Available shops: {valid_shops}"
+        )
+    return shop
 
 # PRODUCT ENDPOINTS
 
