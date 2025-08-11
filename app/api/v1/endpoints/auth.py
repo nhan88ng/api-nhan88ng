@@ -85,22 +85,6 @@ async def register(user_data: UserRegister, background_tasks: BackgroundTasks):
             detail="Failed to create user"
         )
 
-@router.post("/admin/register", response_model=UserResponse)
-async def create_admin_user(
-    user_data: AdminUserCreate, 
-    current_user: dict = RequireAdmin
-):
-    """Create a new admin user (admin only)"""
-    try:
-        user = user_crud.create_admin_user(user_data)
-        return create_user_response(user)
-        
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-
 @router.post("/login", response_model=Token)
 async def login(user_credentials: UserLogin):
     """Login user"""
@@ -332,46 +316,3 @@ async def get_users(
         size=size,
         pages=(total + size - 1) // size
     )
-
-@router.post("/debug/make-admin/{user_id}")
-async def make_user_admin_debug(user_id: str):
-    """Temporary route to make user admin"""
-    try:
-        from app.db.database import get_database
-        from bson import ObjectId
-        
-        db = get_database("tinashop")
-        users_collection = db["users"]
-        
-        # First, find user
-        user = users_collection.find_one({"_id": ObjectId(user_id)})
-        if not user:
-            return {"success": False, "message": f"User {user_id} not found"}
-        
-        current_role = user.get("role", "no role")
-        
-        # Update role
-        result = users_collection.update_one(
-            {"_id": ObjectId(user_id)},
-            {"$set": {"role": "admin"}}
-        )
-        
-        if result.modified_count > 0:
-            user = users_collection.find_one({"_id": ObjectId(user_id)})
-            return {
-                "success": True,
-                "message": f"User {user['email']} is now admin (was {current_role})",
-                "user": {
-                    "id": str(user["_id"]),
-                    "email": user["email"],
-                    "role": user["role"]
-                }
-            }
-        else:
-            return {
-                "success": False, 
-                "message": f"No user updated (found user: {user['email']}, current role: {current_role})"
-            }
-            
-    except Exception as e:
-        return {"success": False, "error": str(e)}

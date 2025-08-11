@@ -228,7 +228,7 @@ class MultiShopTester:
         
         return results
     
-    def test_shop_features(self, shop_id: str, shop_config: dict) -> Dict:
+    def test_shop_features(self, shop_id: str, shop_config: dict, admin_token: str = None) -> Dict:
         """Test shop-specific features"""
         print(f"\n🎯 Testing Features for {shop_config['name']} ({shop_id})")
         results = {}
@@ -236,16 +236,16 @@ class MultiShopTester:
         features = shop_config.get('features', [])
         print(f"   🎯 Shop features: {features}")
         
-        # Test feature availability endpoint
+        # Test 1: Features endpoint consistency
         try:
             response = self.session.get(f"{self.api_base}/shops/{shop_id}/features")
             if response.status_code == 200:
-                api_features = response.json()
+                api_features = response.json().get('features', [])
                 if set(api_features) == set(features):
                     results['feature_consistency'] = "✅ PASS"
                     print(f"   ✅ Feature consistency: API matches config")
                 else:
-                    results['feature_consistency'] = f"❌ MISMATCH (API: {api_features})"
+                    results['feature_consistency'] = f"❌ MISMATCH: API={api_features}, Config={features}"
             else:
                 results['feature_consistency'] = f"❌ FAIL ({response.status_code})"
         except Exception as e:
@@ -254,9 +254,9 @@ class MultiShopTester:
         # Test shop-specific feature endpoints
         feature_tests = {
             'inventory': f"{self.api_base}/products/?shop={shop_id}&stock_only=true",
-            'customers': f"{self.api_base}/users/?shop={shop_id}"
         }
         
+        # Test inventory feature (no auth required)
         for feature, endpoint in feature_tests.items():
             if feature in features:
                 try:
@@ -267,6 +267,25 @@ class MultiShopTester:
                         results[f'feature_{feature}'] = f"❌ FAIL ({response.status_code})"
                 except Exception as e:
                     results[f'feature_{feature}'] = f"❌ ERROR: {e}"
+        
+        # Test customer management feature (requires admin auth)
+        if 'customers' in features and admin_token:
+            try:
+                headers = {"Authorization": f"Bearer {admin_token}"}
+                response = requests.get(f"{self.api_base}/auth/users?shop={shop_id}", headers=headers)
+                if response.status_code == 200:
+                    data = response.json()
+                    customer_count = data.get('total', 0)
+                    results['feature_customers'] = f"✅ ACCESSIBLE ({customer_count} customers)"
+                    print(f"   ✅ Customer management: {customer_count} customers found")
+                else:
+                    results['feature_customers'] = f"❌ FAIL ({response.status_code})"
+                    print(f"   ❌ Customer management failed: {response.status_code}")
+            except Exception as e:
+                results['feature_customers'] = f"❌ ERROR: {e}"
+        elif 'customers' in features:
+            results['feature_customers'] = "⚠️ SKIP (no admin token)"
+            print(f"   ⚠️ Customer management skipped: no admin token")
         
         return results
     
@@ -358,7 +377,7 @@ class MultiShopTester:
             auth_results, admin_token = self.test_shop_authentication(shop_id, shop_config)
             shop_results.update(auth_results)
             shop_results.update(self.test_shop_products(shop_id, shop_config, admin_token))
-            shop_results.update(self.test_shop_features(shop_id, shop_config))
+            shop_results.update(self.test_shop_features(shop_id, shop_config, admin_token))
             
             self.test_results[shop_id] = shop_results
         

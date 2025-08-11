@@ -102,37 +102,6 @@ async def get_product(
             detail="Error retrieving product"
         )
 
-@router.get("/slug/{slug}", response_model=ProductResponse)
-async def get_product_by_slug(
-    slug: str = Path(..., description="Product slug"),
-    shop: str = Query(default="tinashop", description="Shop name"),
-    current_user: Optional[dict] = Depends(get_current_user_optional)
-):
-    """
-    Get product by slug (SEO-friendly URL)
-    
-    **Authentication optional**
-    """
-    try:
-        product = product_crud.get_product_by_slug(slug, shop)
-        if not product:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Product not found"
-            )
-        
-        return ProductResponse(**product)
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"Invalid slug format: {str(e)}"
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error retrieving product"
-        )
-
 @router.put("/{product_id}", response_model=ProductResponse)
 async def update_product(
     product_id: str,
@@ -385,77 +354,4 @@ async def delete_category(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to delete category"
-        )
-
-# STATISTICS ENDPOINTS
-
-@router.get("/stats/overview")
-async def get_product_stats(
-    shop: str = Query(default="tinashop", description="Shop name"),
-    current_user: Optional[dict] = Depends(get_current_user_optional)
-):
-    """
-    Get product statistics overview
-    
-    **Authentication optional for basic stats**
-    """
-    try:
-        from app.db.database import get_database
-        db = get_database(shop)
-        products_collection = db["products"]
-        categories_collection = db["categories"]
-        
-        # Basic counts (available to all)
-        total_products = products_collection.count_documents({"shop": shop})
-        total_categories = categories_collection.count_documents({"shop": shop})
-        
-        # Low stock products (< 10 items)
-        low_stock = products_collection.count_documents({
-            "shop": shop,
-            "stock_quantity": {"$lt": 10, "$gt": 0}
-        })
-        
-        # Out of stock products
-        out_of_stock = products_collection.count_documents({
-            "shop": shop,
-            "stock_quantity": {"$lte": 0}
-        })
-        
-        basic_stats = {
-            "total_products": total_products,
-            "total_categories": total_categories,
-            "low_stock_count": low_stock,
-            "out_of_stock_count": out_of_stock,
-            "shop": shop
-        }
-        
-        # Detailed stats only for authenticated users
-        if current_user:
-            # Products by status
-            status_counts = {}
-            status_pipeline = [
-                {"$match": {"shop": shop}},
-                {"$group": {"_id": "$status", "count": {"$sum": 1}}}
-            ]
-            for result in products_collection.aggregate(status_pipeline):
-                status_counts[result["_id"] or "active"] = result["count"]
-            
-            # Featured products
-            featured_count = products_collection.count_documents({
-                "shop": shop,
-                "is_featured": True
-            })
-            
-            basic_stats.update({
-                "status_counts": status_counts,
-                "featured_count": featured_count
-            })
-        
-        return basic_stats
-        
-    except Exception as e:
-        print(f"Stats error: {e}")  # Debug log
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to fetch product statistics"
         )
