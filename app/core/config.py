@@ -1,18 +1,16 @@
-from typing import List
-from pydantic_settings import BaseSettings
-from pydantic import Field
-import os
-
-
-"""
-Application configuration management
-"""
-from pydantic_settings import BaseSettings
 from typing import List, Optional
-from pydantic import Field
+from pydantic_settings import BaseSettings
+from pydantic import Field, ConfigDict
 import os
 
 class Settings(BaseSettings):
+    # Pydantic v2 configuration - ALLOW extra fields for Coolify env vars
+    model_config = ConfigDict(
+        env_file=".env",
+        case_sensitive=True,
+        extra='ignore'  # Allow extra fields like COOLIFY_CONTAINER_NAME
+    )
+    
     # API Configuration
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "Nhan88ng API"
@@ -76,11 +74,5 @@ class Settings(BaseSettings):
     # Test Credentials - ALL READ FROM .env FOR SECURITY
     TEST_USER_PASSWORD: str
     BASE_URL: str
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
-        # Don't validate assignment to avoid issues with property setters
-        validate_assignment = False
 
 settings = Settings()
