@@ -128,21 +128,85 @@ class ShopManager:
         default_shops = {
             "tinashop": {
                 "name": "Tina Shop",
-                "mongodb_url": os.getenv("MONGODB_SHARED_URL", ""),
+                "mongodb_url": os.getenv("MONGODB_TINASHOP_URL", ""),
                 "admin_email": "admin@tina.shop",
-                "admin_password": "admin123",
-                "frontend_url": os.getenv("FRONTEND_URL", "http://localhost:3000"),
+                "admin_password": "123admin123",
+                "frontend_url": os.getenv("FRONTEND_TINASHOP_URL", "https://tina.shop"),
                 "domain": "tina.shop",
-                "description": "Fashion & Lifestyle Store"
+                "description": "Fashion & Lifestyle Store",
+                "theme": {
+                    "primary_color": "#007bff",
+                    "secondary_color": "#6c757d",
+                    "logo": "/static/images/tinashop/logo.png",
+                    "favicon": "/static/images/tinashop/favicon.ico",
+                    "banner": "/static/images/tinashop/banner.jpg"
+                },
+                "features": [
+                    "products",
+                    "inventory",
+                    "categories",
+                    "customers"
+                ],
+                "settings": {
+                    "allow_guest_checkout": True,
+                    "require_email_verification": False,
+                    "enable_reviews": True,
+                    "enable_wishlist": True,
+                    "currency": "VND",
+                    "language": "vi",
+                    "timezone": "Asia/Ho_Chi_Minh"
+                },
+                "contact": {
+                    "email": "support@tina.shop",
+                    "phone": "+84 123 456 789",
+                    "address": "123 Fashion Street, Ho Chi Minh City"
+                },
+                "social": {
+                    "facebook": "https://facebook.com/tinashop",
+                    "instagram": "https://instagram.com/tinashop",
+                    "twitter": "https://twitter.com/tinashop"
+                }
             },
             "micocah": {
                 "name": "Micocah",
-                "mongodb_url": os.getenv("MONGODB_SHARED_URL", ""),
+                "mongodb_url": os.getenv("MONGODB_MICOCAH_URL", ""),
                 "admin_email": "admin@micocah.vn", 
-                "admin_password": "creator123",
-                "frontend_url": os.getenv("FRONTEND_URL", "http://localhost:3000"),
+                "admin_password": "123creator123",
+                "frontend_url": os.getenv("FRONTEND_MICOCAH_URL", "https://micocah.vn"),
                 "domain": "micocah.vn",
-                "description": "Technology & Electronics Hub"
+                "description": "Technology & Electronics Hub",
+                "theme": {
+                    "primary_color": "#28a745",
+                    "secondary_color": "#ffc107",
+                    "logo": "/static/images/micocah/logo.png",
+                    "favicon": "/static/images/micocah/favicon.ico", 
+                    "banner": "/static/images/micocah/banner.jpg"
+                },
+                "features": [
+                    "products",
+                    "inventory",
+                    "categories",
+                    "customers"
+                ],
+                "settings": {
+                    "allow_guest_checkout": False,
+                    "require_email_verification": True,
+                    "enable_reviews": True,
+                    "enable_wishlist": False,
+                    "currency": "VND",
+                    "language": "vi",
+                    "timezone": "Asia/Ho_Chi_Minh"
+                },
+                "contact": {
+                    "email": "support@micocah.vn",
+                    "phone": "+84 987 654 321", 
+                    "address": "456 Tech Avenue, Ha Noi"
+                },
+                "social": {
+                    "facebook": "https://facebook.com/micocah",
+                    "youtube": "https://youtube.com/micocah",
+                    "linkedin": "https://linkedin.com/company/micocah"
+                }
             }
         }
         
