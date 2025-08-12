@@ -81,24 +81,76 @@ class ShopManager:
         self._load_shops()
     
     def _load_shops(self):
-        """Load shop configurations from JSON file"""
+        """Load shop configurations from JSON file or environment variable"""
+        # Try to load from file first (preferred method)
         config_path = Path(self.config_file)
         
-        if not config_path.exists():
-            raise FileNotFoundError(f"Shop configuration file not found: {self.config_file}")
-        
-        try:
-            with open(config_path, 'r', encoding='utf-8') as f:
-                shops_data = json.load(f)
-            
-            self._shops = {}
-            for shop_id, shop_data in shops_data.items():
-                self._shops[shop_id] = ShopConfig.from_dict(shop_id, shop_data)
+        if config_path.exists():
+            try:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    shops_data = json.load(f)
                 
-        except json.JSONDecodeError as e:
-            raise ValueError(f"Invalid JSON in shop configuration file: {e}")
-        except Exception as e:
-            raise ValueError(f"Error loading shop configuration: {e}")
+                self._shops = {}
+                for shop_id, shop_data in shops_data.items():
+                    self._shops[shop_id] = ShopConfig.from_dict(shop_id, shop_data)
+                print(f"✅ Loaded {len(self._shops)} shops from file: {self.config_file}")
+                return
+                    
+            except json.JSONDecodeError as e:
+                print(f"⚠️ Invalid JSON in shop configuration file: {e}")
+                raise ValueError(f"Invalid JSON in shop configuration file: {e}")
+            except Exception as e:
+                print(f"⚠️ Error loading shops from file: {e}")
+                raise RuntimeError(f"Error loading shop configuration: {e}")
+        
+        # Fallback to environment variable if file doesn't exist
+        shops_config_env = os.getenv('SHOPS_CONFIG')
+        if shops_config_env:
+            try:
+                shops_data = json.loads(shops_config_env)
+                self._shops = {}
+                for shop_id, shop_data in shops_data.items():
+                    self._shops[shop_id] = ShopConfig.from_dict(shop_id, shop_data)
+                print(f"✅ Loaded {len(self._shops)} shops from environment variable")
+                return
+            except json.JSONDecodeError as e:
+                print(f"⚠️ Invalid JSON in SHOPS_CONFIG environment variable: {e}")
+            except Exception as e:
+                print(f"⚠️ Error loading shops from environment: {e}")
+        
+        # Final fallback: create default shops
+        print(f"⚠️ Shop configuration file not found: {self.config_file}")
+        print("📝 Creating default shop configuration...")
+        self._create_default_shops()
+    
+    def _create_default_shops(self):
+        """Create default shop configurations when no config file exists"""
+        default_shops = {
+            "tinashop": {
+                "name": "Tina Shop",
+                "mongodb_url": os.getenv("MONGODB_SHARED_URL", ""),
+                "admin_email": "admin@tina.shop",
+                "admin_password": "admin123",
+                "frontend_url": os.getenv("FRONTEND_URL", "http://localhost:3000"),
+                "domain": "tina.shop",
+                "description": "Fashion & Lifestyle Store"
+            },
+            "micocah": {
+                "name": "Micocah",
+                "mongodb_url": os.getenv("MONGODB_SHARED_URL", ""),
+                "admin_email": "admin@micocah.vn", 
+                "admin_password": "creator123",
+                "frontend_url": os.getenv("FRONTEND_URL", "http://localhost:3000"),
+                "domain": "micocah.vn",
+                "description": "Technology & Electronics Hub"
+            }
+        }
+        
+        self._shops = {}
+        for shop_id, shop_data in default_shops.items():
+            self._shops[shop_id] = ShopConfig.from_dict(shop_id, shop_data)
+        
+        print(f"✅ Created {len(self._shops)} default shops")
     
     def get_shop(self, shop_id: str) -> Optional[ShopConfig]:
         """Get shop configuration by ID"""
